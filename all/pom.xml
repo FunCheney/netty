@@ -85,7 +85,7 @@
         <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>netty-resolver-dns-native-macos</artifactId>
-          <classifier>osx-x86_64</classifier>
+<!--          <classifier>osx-x86_64</classifier>-->
           <scope>compile</scope>
           <optional>true</optional>
         </dependency>
@@ -121,7 +121,7 @@
         <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>netty-resolver-dns-native-macos</artifactId>
-          <classifier>osx-x86_64</classifier>
+<!--          <classifier>osx-x86_64</classifier>-->
           <scope>compile</scope>
           <optional>true</optional>
         </dependency>
@@ -186,7 +186,7 @@
         <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>netty-resolver-dns-native-macos</artifactId>
-          <classifier>osx-x86_64</classifier>
+<!--          <classifier>osx-x86_64</classifier>-->
           <scope>compile</scope>
           <optional>true</optional>
         </dependency>
