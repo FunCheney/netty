@@ -423,6 +423,7 @@
 <!--    <module>transport-blockhound-tests</module>-->
     <module>microbench</module>
     <module>bom</module>
+      <module>src-read</module>
   </modules>
 
   <dependencyManagement>
