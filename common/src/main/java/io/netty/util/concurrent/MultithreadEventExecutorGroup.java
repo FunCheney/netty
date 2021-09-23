@@ -75,12 +75,13 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
         if (executor == null) {
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
-
+        // 创建 NioEventLoop 实例
         children = new EventExecutor[nThreads];
-
+        // 初始化 NioEventLoop 实例
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {
+
                 children[i] = newChild(executor, args);
                 success = true;
             } catch (Exception e) {
@@ -107,7 +108,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
                 }
             }
         }
-
+        // 多个 NioEventLoop 中的选择策略
         chooser = chooserFactory.newChooser(children);
 
         final FutureListener<Object> terminationListener = new FutureListener<Object>() {

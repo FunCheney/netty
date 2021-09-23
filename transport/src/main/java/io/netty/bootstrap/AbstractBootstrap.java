@@ -264,11 +264,14 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
      * Create a new {@link Channel} and bind it.
      */
     public ChannelFuture bind(SocketAddress localAddress) {
+        // 校验参数
         validate();
+        // 绑定地址
         return doBind(ObjectUtil.checkNotNull(localAddress, "localAddress"));
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
+        // 1.初始化操作
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -307,9 +310,11 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
-            // 创建 Channel
+            // 1.创建 (netty 自定义)Channel 实例，并初始化
+            // channel 为 NioServerSocketChannel 实例，
+            // NioServerSocketChannel的父类AbstractNioChannel保存有nio的ServerSocketChannel
             channel = channelFactory.newChannel();
-            // 初始化 Channel
+            // 2.初始化 Channel
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -321,7 +326,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             // as the Channel is not registered yet we need to force the usage of the GlobalEventExecutor
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
-
+        // 3.向 Selector 注册 channel
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {
