@@ -496,20 +496,25 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
+                // 调用 AbstractNioChannel 的 doRegister 方法
                 doRegister();
+
                 neverRegistered = false;
                 registered = true;
 
                 // Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the
                 // user may already fire events through the pipeline in the ChannelFutureListener.
+                // 调用 handlerAdded 事件，这里会调用 initChannel 方法，设置 channel.pipeline, 也即是添加 ServerBootstrapAcceptor
                 pipeline.invokeHandlerAddedIfNeeded();
-
+                // 调用 operationComplete 回调
                 safeSetSuccess(promise);
+                // 回调 fireChannelRegistered
                 pipeline.fireChannelRegistered();
                 // Only fire a channelActive if the channel has never been registered. This prevents firing
                 // multiple channel actives if the channel is deregistered and re-registered.
                 if (isActive()) {
                     if (firstRegistration) {
+                        // 回调 fireChannelActive
                         pipeline.fireChannelActive();
                     } else if (config().isAutoRead()) {
                         // This channel was registered before and autoRead() is set. This means we need to begin read

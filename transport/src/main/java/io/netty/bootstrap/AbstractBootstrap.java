@@ -277,16 +277,22 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         if (regFuture.cause() != null) {
             return regFuture;
         }
-
+        // 2. doBind0 操作
         if (regFuture.isDone()) {
             // At this point we know that the registration was complete and successful.
+            // register 已完成，这里直接调用 doBind0
             ChannelPromise promise = channel.newPromise();
             doBind0(regFuture, channel, localAddress, promise);
             return promise;
         } else {
             // Registration future is almost always fulfilled already, but just in case it's not.
+            // register 还未完成，注册 listener 回调，在回调中调用 doBind0
             final PendingRegistrationPromise promise = new PendingRegistrationPromise(channel);
             regFuture.addListener(new ChannelFutureListener() {
+                /**
+                 * channel register 完成（注册到 selector 并且调用了 invokeHandlerAddedIfNeeded）之后，
+                 * 会调用 safeSetSuccess(), 触发各个 ChannelFutureListener，最终会调用到这里的这个 operationComplete 方法
+                 */
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     Throwable cause = future.cause();

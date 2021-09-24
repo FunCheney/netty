@@ -30,6 +30,10 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Echoes back any received data from a client.
  */
@@ -69,7 +73,6 @@ public final class EchoServer {
                      p.addLast(serverHandler);
                  }
              });
-
             // Start the server.
             ChannelFuture f = b.bind(PORT).sync();
 
