@@ -70,8 +70,11 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
      */
     protected AbstractChannel(Channel parent) {
         this.parent = parent;
+        // channelId 代表 Channel 的唯一标识
         id = newId();
+        // 创建一个 unsafe 对象
         unsafe = newUnsafe();
+        // 初始化每一个channel 都会有的 pipeline 组件
         pipeline = newChannelPipeline();
     }
 
@@ -461,7 +464,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                         new IllegalStateException("incompatible event loop type: " + eventLoop.getClass().getName()));
                 return;
             }
-
+            // 赋值给自己的事件循环，把当前的 eventLoop 赋值给当前的 channel 上
             AbstractChannel.this.eventLoop = eventLoop;
             // 直接执行 register0 或者以任务的方式提交执行
             // 启动时，首先执行到这里的是 main 线程，所以是以任务提交的方式执行的
@@ -470,7 +473,8 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 register0(promise);
             } else {
                 try {
-                    // 往 NioEventLoop 中
+                    // 往 NioEventLoop 中提交事件，新的任务在新的线程开始，规避了多线程的并发问题
+                    // SingleThreadEventExecutor 中把任务添加进队列中
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -497,6 +501,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 }
                 boolean firstRegistration = neverRegistered;
                 // 调用 AbstractNioChannel 的 doRegister 方法
+                // 把系统创建的 ServerSocketChannel 注册进了选择器
                 doRegister();
 
                 neverRegistered = false;
@@ -504,6 +509,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
 
                 // Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the
                 // user may already fire events through the pipeline in the ChannelFutureListener.
+                // 确保在 notify the promise 前调用 handlerAdded()
                 // 调用 handlerAdded 事件，这里会调用 initChannel 方法，设置 channel.pipeline, 也即是添加 ServerBootstrapAcceptor
                 pipeline.invokeHandlerAddedIfNeeded();
                 // 调用 operationComplete 回调

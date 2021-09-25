@@ -343,7 +343,9 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
      */
     protected void addTask(Runnable task) {
         ObjectUtil.checkNotNull(task, "task");
+        // 添加任务
         if (!offerTask(task)) {
+            // 拒绝任务
             reject(task);
         }
     }
@@ -825,6 +827,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void execute(Runnable task, boolean immediate) {
         boolean inEventLoop = inEventLoop();
+        // 添加任务
         addTask(task);
         if (!inEventLoop) {
             startThread();
