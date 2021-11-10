@@ -185,12 +185,17 @@ import io.netty.channel.ChannelHandlerContext;
  * @see LengthFieldPrepender
  */
 public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
-
+    /** 字节顺序，大端、小端*/
     private final ByteOrder byteOrder;
+    /** 缓冲区接收的最大[字节]长度*/
     private final int maxFrameLength;
+    /** 长度字段偏移量*/
     private final int lengthFieldOffset;
+    /** 长度字段的长度（字节数)*/
     private final int lengthFieldLength;
+    /** 长度字段字节结束（末尾）的偏移量*/
     private final int lengthFieldEndOffset;
+    /** */
     private final int lengthAdjustment;
     private final int initialBytesToStrip;
     private final boolean failFast;
@@ -329,6 +334,7 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
 
     @Override
     protected final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        // 解析方法，根据需要重写
         Object decoded = decode(ctx, in);
         if (decoded != null) {
             out.add(decoded);
