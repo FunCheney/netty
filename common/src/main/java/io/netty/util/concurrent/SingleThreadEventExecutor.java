@@ -354,6 +354,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         if (isShutdown()) {
             reject();
         }
+        // 任务添加到队列中
         return taskQueue.offer(task);
     }
 

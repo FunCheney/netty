@@ -151,8 +151,11 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             @Override
             public void initChannel(final Channel ch) {
                 final ChannelPipeline pipeline = ch.pipeline();
+                // 获取一个 Handler
+                //
                 ChannelHandler handler = config.handler();
                 if (handler != null) {
+                    // 如果 handler 不为空，则添加到 pipeline中
                     pipeline.addLast(handler);
                 }
 
@@ -221,6 +224,9 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             setAttributes(child, childAttrs);
 
             try {
+                // childGroup 是构造对象时传入的 currentChildGroup 也就是 workGroup 对象
+                // 这里的 channel 就是 NioSocketChannel 的实例，因此，childGroup 的 register()
+                // 方法就是就是将 workerGroup 中的某个 EventLoop 和 NioSocketChannel 进行关联
                 childGroup.register(child).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {

@@ -215,6 +215,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             @Override
             public Object run() {
                 try {
+                    // 用反射的方法从 class 对象中获得两个属性，用来存储已注册的事件
                     Field selectedKeysField = selectorImplClass.getDeclaredField("selectedKeys");
                     Field publicSelectedKeysField = selectorImplClass.getDeclaredField("publicSelectedKeys");
 
@@ -383,6 +384,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         }
 
         try {
+            // 创建一个新的 Selector
             newSelectorTuple = openSelector();
         } catch (Exception e) {
             logger.warn("Failed to create a new Selector.", e);
@@ -487,6 +489,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 if (ioRatio == 100) {
                     try {
                         if (strategy > 0) {
+                            // 对不同的轮询事件进行处理
                             processSelectedKeys();
                         }
                     } finally {
