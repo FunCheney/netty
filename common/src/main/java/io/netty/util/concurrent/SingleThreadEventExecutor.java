@@ -830,6 +830,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         // 添加任务
         addTask(task);
         if (!inEventLoop) {
+            // 创建线程
             startThread();
             if (isShutdown()) {
                 boolean reject = false;

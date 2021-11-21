@@ -72,7 +72,8 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
         this.parent = parent;
         // channelId 代表 Channel 的唯一标识
         id = newId();
-        // 创建一个 unsafe 对象
+        // 创建一个 unsafe 对象, 它的类型是  io.netty.channel.nio.AbstractNioByteChannel.newUnsafe（客户端使用）
+        // io.netty.channel.nio.AbstractNioMessageChannel.newUnsafe (服务端使用)
         unsafe = newUnsafe();
         // 初始化每一个channel 都会有的 pipeline 组件
         pipeline = newChannelPipeline();
@@ -108,6 +109,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
      * Returns a new {@link DefaultChannelPipeline} instance.
      */
     protected DefaultChannelPipeline newChannelPipeline() {
+        // 初始化一个 默认的 pipeline
         return new DefaultChannelPipeline(this);
     }
 

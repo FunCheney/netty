@@ -89,12 +89,19 @@ public class DefaultChannelPipeline implements ChannelPipeline {
      */
     private boolean registered;
 
+    /**
+     *
+     * @param channel 实例化的 NioSocketChannel 对象
+     */
     protected DefaultChannelPipeline(Channel channel) {
+        // 赋值给 channel 属性
         this.channel = ObjectUtil.checkNotNull(channel, "channel");
+
         succeededFuture = new SucceededChannelFuture(channel, null);
         voidPromise =  new VoidChannelPromise(channel, true);
-
+        // 双向链表的尾部
         tail = new TailContext(this);
+        // 双向链表的头部
         head = new HeadContext(this);
 
         head.next = tail;

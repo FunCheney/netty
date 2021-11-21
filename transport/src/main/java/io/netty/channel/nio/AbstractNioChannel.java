@@ -79,7 +79,10 @@ public abstract class AbstractNioChannel extends AbstractChannel {
      */
     protected AbstractNioChannel(Channel parent, SelectableChannel ch, int readInterestOp) {
         super(parent);
+        // ch 被赋值为 java 原生 SocketChannel，即 NioSocketChannel 的 new Socket()
+        // 方法返回的 Java NIO SocketChannel
         this.ch = ch;
+        // 被赋值为 传入的事件类型
         this.readInterestOp = readInterestOp;
         try {
             // 设置 Java NIO channel 为非阻塞的

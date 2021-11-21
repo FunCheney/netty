@@ -138,9 +138,12 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         // 创建 taskQueue
         super(parent, executor, false, newTaskQueue(queueFactory), newTaskQueue(queueFactory),
                 rejectedExecutionHandler);
+        // 赋值 provider 对象
         this.provider = ObjectUtil.checkNotNull(selectorProvider, "selectorProvider");
+
         this.selectStrategy = ObjectUtil.checkNotNull(strategy, "selectStrategy");
         final SelectorTuple selectorTuple = openSelector();
+        // 获取 selector 对象
         this.selector = selectorTuple.selector;
         this.unwrappedSelector = selectorTuple.unwrappedSelector;
     }
@@ -456,6 +459,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                         nextWakeupNanos.set(curDeadlineNanos);
                         try {
                             if (!hasTasks()) {
+                                //
                                 strategy = select(curDeadlineNanos);
                             }
                         } finally {
