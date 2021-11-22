@@ -75,7 +75,9 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                     SingleThreadEventExecutor.class, ThreadProperties.class, "threadProperties");
 
     private final Queue<Runnable> taskQueue;
-
+    /**
+     * 与 SingleThreadEventExecutor 关联的本地线程
+     */
     private volatile Thread thread;
     @SuppressWarnings("unused")
     private volatile ThreadProperties threadProperties;
@@ -945,6 +947,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
     private static final long SCHEDULE_PURGE_INTERVAL = TimeUnit.SECONDS.toNanos(1);
 
     private void startThread() {
+        // ST_NOT_STARTED 用来标识当前的 Thread 状态
         if (state == ST_NOT_STARTED) {
             if (STATE_UPDATER.compareAndSet(this, ST_NOT_STARTED, ST_STARTED)) {
                 boolean success = false;
@@ -983,6 +986,9 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         executor.execute(new Runnable() {
             @Override
             public void run() {
+                // 将当前线程赋值给 Thread，这个线程中所做事情的主要是调用
+                // SingleThreadEventExecutor.this.run() 方法
+                // 因为 NioEventLoop 实现了这个方法，所以根据多态性，其实调用的是 NioEventLoop.run() 方法
                 thread = Thread.currentThread();
                 if (interrupted) {
                     thread.interrupt();

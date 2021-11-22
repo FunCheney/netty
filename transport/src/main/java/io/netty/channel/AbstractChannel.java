@@ -470,13 +470,14 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             AbstractChannel.this.eventLoop = eventLoop;
             // 直接执行 register0 或者以任务的方式提交执行
             // 启动时，首先执行到这里的是 main 线程，所以是以任务提交的方式执行的
-            // 也就是说，该任务是 NioEventLoop 第一次执行的任务，即调用 register0
+            // 也就是说，该任务是 NioEventLoop 第一次执行的任务，也就是说 eventLoop.inEventLoop() 返回 false
             if (eventLoop.inEventLoop()) {
                 register0(promise);
             } else {
                 try {
                     // 往 NioEventLoop 中提交事件，新的任务在新的线程开始，规避了多线程的并发问题
                     // SingleThreadEventExecutor 中把任务添加进队列中
+                    // 第一次被调用时 触发 startThread() 方法启动 SingleThreadEventExecutor 关联的本地 java  线程
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {
