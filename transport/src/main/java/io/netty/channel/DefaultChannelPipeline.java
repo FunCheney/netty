@@ -124,6 +124,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
     }
 
     private AbstractChannelHandlerContext newContext(EventExecutorGroup group, String name, ChannelHandler handler) {
+        // 创建 DefaultChannelHandlerContext
         return new DefaultChannelHandlerContext(this, childExecutor(group), name, handler);
     }
 
@@ -206,10 +207,11 @@ public class DefaultChannelPipeline implements ChannelPipeline {
     public final ChannelPipeline addLast(EventExecutorGroup group, String name, ChannelHandler handler) {
         final AbstractChannelHandlerContext newCtx;
         synchronized (this) {
+            // 检查 ChannelHandler 的名字是否重复
             checkMultiplicity(handler);
-
+            // 不重复，调用 newContext() 方法 创建一个 DefaultChannelHandlerContext 实例，并与之关联起来
             newCtx = newContext(group, filterName(name, handler), handler);
-
+            // 维持双向链表
             addLast0(newCtx);
 
             // If the registered is false it means that the channel was not registered on an eventLoop yet.
