@@ -467,6 +467,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 return;
             }
             // 赋值给自己的事件循环，把当前的 eventLoop 赋值给当前的 channel 上
+            // 这句代码就是完成了 eventLoop 和 Channel 的关联过程
             AbstractChannel.this.eventLoop = eventLoop;
             // 直接执行 register0 或者以任务的方式提交执行
             // 启动时，首先执行到这里的是 main 线程，所以是以任务提交的方式执行的

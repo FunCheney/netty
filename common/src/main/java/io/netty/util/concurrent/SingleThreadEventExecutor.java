@@ -952,6 +952,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
             if (STATE_UPDATER.compareAndSet(this, ST_NOT_STARTED, ST_STARTED)) {
                 boolean success = false;
                 try {
+                    // 第一次调用启动线程
                     doStartThread();
                     success = true;
                 } finally {
@@ -983,6 +984,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void doStartThread() {
         assert thread == null;
+        // 调用 execute() 方法
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -997,6 +999,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                 boolean success = false;
                 updateLastExecutionTime();
                 try {
+                    // 调用的是 NioEventLoop.run() 方法
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {
