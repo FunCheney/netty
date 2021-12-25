@@ -418,11 +418,14 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
      */
     protected void callDecode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         try {
+            // 只要累加器里面有数据
             while (in.isReadable()) {
                 int outSize = out.size();
-
+                // 判断当前 list 是否有对象
                 if (outSize > 0) {
+                    // 如果有对象，则向下传播事件
                     fireChannelRead(ctx, out, outSize);
+                    // 清空当前 list
                     out.clear();
 
                     // Check if this handler was removed before continuing with decoding.
@@ -430,12 +433,13 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                     //
                     // See:
                     // - https://github.com/netty/netty/issues/4635
+                    // 解码过程中判断如果 ctx 被删除就跳出循环
                     if (ctx.isRemoved()) {
                         break;
                     }
                     outSize = 0;
                 }
-
+                // 当前可读数据长度
                 int oldInputLength = in.readableBytes();
                 decodeRemovalReentryProtection(ctx, in, out);
 
@@ -446,15 +450,19 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
                 if (ctx.isRemoved()) {
                     break;
                 }
-
+                // List 解析前大小和解析后长度一样
                 if (outSize == out.size()) {
+                    // 原来可读长度 == 解析后可读长度
+                    // 说明没有读取数据（当前累加的数据并没有拼成一个完整的数据包）
                     if (oldInputLength == in.readableBytes()) {
+                        // 跳出循环（下次在读取数据才能进行后续的解析）
                         break;
                     } else {
+                        // 没有解析到数据，但是进行读取了
                         continue;
                     }
                 }
-
+                // out 里面有数据，但是没有从累加器读数据
                 if (oldInputLength == in.readableBytes()) {
                     throw new DecoderException(
                             StringUtil.simpleClassName(getClass()) +
