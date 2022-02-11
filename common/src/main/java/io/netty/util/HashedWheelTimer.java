@@ -239,8 +239,11 @@ public class HashedWheelTimer implements Timer {
      * @throws IllegalArgumentException if either of {@code tickDuration} and {@code ticksPerWheel} is &lt;= 0
      */
     public HashedWheelTimer(
-            ThreadFactory threadFactory,
-            long tickDuration, TimeUnit unit, int ticksPerWheel, boolean leakDetection,
+            ThreadFactory threadFactory, // 用来创建 work 的线程
+            long tickDuration,// tick 时长，也就是多久时针转一圈
+            TimeUnit unit, // tickDuration 的时间单位
+            int ticksPerWheel, // 一圈有几格
+            boolean leakDetection, // 是否开启内存泄露检测
             long maxPendingTimeouts) {
 
         ObjectUtil.checkNotNull(threadFactory, "threadFactory");
@@ -249,7 +252,9 @@ public class HashedWheelTimer implements Timer {
         ObjectUtil.checkPositive(ticksPerWheel, "ticksPerWheel");
 
         // Normalize ticksPerWheel to power of two and initialize the wheel.
+        // 创建时间轮基本的数据结构
         wheel = createWheel(ticksPerWheel);
+        // 标志位 数组长度 - 1
         mask = wheel.length - 1;
 
         // Convert tickDuration to nanos.
@@ -304,8 +309,9 @@ public class HashedWheelTimer implements Timer {
             throw new IllegalArgumentException(
                     "ticksPerWheel may not be greater than 2^30: " + ticksPerWheel);
         }
-
+        // 计算数组中元素的个数
         ticksPerWheel = normalizeTicksPerWheel(ticksPerWheel);
+        // 创建数组
         HashedWheelBucket[] wheel = new HashedWheelBucket[ticksPerWheel];
         for (int i = 0; i < wheel.length; i ++) {
             wheel[i] = new HashedWheelBucket();
