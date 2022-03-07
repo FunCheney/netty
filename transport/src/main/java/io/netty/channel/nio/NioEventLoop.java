@@ -175,19 +175,23 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     private SelectorTuple openSelector() {
         final Selector unwrappedSelector;
         try {
+            // 利用 jdk 提供的 SelectorProvider 直接创建一个Selector
             unwrappedSelector = provider.openSelector();
         } catch (IOException e) {
             throw new ChannelException("failed to open a new selector", e);
         }
 
         if (DISABLE_KEY_SET_OPTIMIZATION) {
+            // 如果没有开启 KEYSET 优化，将上面的那个 Selector 直接返回
             return new SelectorTuple(unwrappedSelector);
         }
+
 
         Object maybeSelectorImplClass = AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
                 try {
+                    // 用反射的方式创建一个 SelectorImpl 对象
                     return Class.forName(
                             "sun.nio.ch.SelectorImpl",
                             false,
@@ -208,7 +212,9 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             return new SelectorTuple(unwrappedSelector);
         }
 
+
         final Class<?> selectorImplClass = (Class<?>) maybeSelectorImplClass;
+        // 创建一个专门存放SelectionKey的Set对象
         final SelectedSelectionKeySet selectedKeySet = new SelectedSelectionKeySet();
 
         Object maybeException = AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -244,8 +250,9 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                     if (cause != null) {
                         return cause;
                     }
-
+                    // 强制将SelectorImpl中的selectedKeys域替换为优化版的SelectedSelectionKeySet对象
                     selectedKeysField.set(unwrappedSelector, selectedKeySet);
+                    // 强制将SelectorImpl中的publicSelectedKeys域替换为优化版的SelectedSelectionKeySet对象
                     publicSelectedKeysField.set(unwrappedSelector, selectedKeySet);
                     return null;
                 } catch (NoSuchFieldException e) {
