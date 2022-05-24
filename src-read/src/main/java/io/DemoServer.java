@@ -22,7 +22,7 @@ public class DemoServer extends Thread {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(0);
+            serverSocket = new ServerSocket(6666);
             while (true) {
                 Socket socket = serverSocket.accept();
                 RequestHandler requestHandler = new RequestHandler(socket);
@@ -66,7 +66,7 @@ public class DemoServer extends Thread {
         server.start();
         try (Socket client = new Socket(InetAddress.getLocalHost(), server.getPort())) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            bufferedReader.lines().forEach(s -> System.out.println(s));
+            bufferedReader.lines().forEach(System.out::println);
         }catch (Exception e){
             e.printStackTrace();
         }

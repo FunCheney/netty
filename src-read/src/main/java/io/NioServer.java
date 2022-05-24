@@ -22,9 +22,9 @@ import java.util.Set;
 public class NioServer extends Thread {
     @Override
     public void run() {
+        // 创建一个 Selector，作为类似调度员的角色
         try (Selector selector = Selector.open();
-             ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        ) {
+             ServerSocketChannel serverSocket = ServerSocketChannel.open()) {
             // 创建Selector和Channel
             serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), 8888));
             serverSocket.configureBlocking(false);
