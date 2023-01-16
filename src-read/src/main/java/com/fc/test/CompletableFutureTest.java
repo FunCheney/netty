@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @author: Fchen
- * @date: 2021/1/6 3:24 下午
- * @desc: 测试类
+ * @author Fchen
+ * @date 2021/1/6 3:24 下午
+ * @desc 测试类
  */
 public class CompletableFutureTest {
 
