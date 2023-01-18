@@ -106,7 +106,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
      * {@link Channel} implementation has no no-args constructor.
      */
     public B channel(Class<? extends C> channelClass) {
-        // 创建 channel 工厂
+        // 创建 channelFactory
         return channelFactory(new ReflectiveChannelFactory<C>(
                 ObjectUtil.checkNotNull(channelClass, "channelClass")
         ));
@@ -320,6 +320,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             // 1.创建 (netty 自定义)Channel 实例，并初始化
             // channel 为 NioServerSocketChannel 实例，
             // NioServerSocketChannel的父类AbstractNioChannel保存有nio的ServerSocketChannel
+            // channelFactory 为 ReflectiveChannelFactory
             channel = channelFactory.newChannel();
             // 2.初始化 Channel
             init(channel);

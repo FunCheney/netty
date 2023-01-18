@@ -73,6 +73,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
         }
 
         if (executor == null) {
+            // 创建 ThreadPerTaskExecutor
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
         // 创建 NioEventLoop 实例
