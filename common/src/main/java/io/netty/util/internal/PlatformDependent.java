@@ -197,6 +197,7 @@ public final class PlatformDependent {
             CLEANER = NOOP;
         }
 
+        // 使用堆外内存有两个条件：1. 有 Cleaner 方法去释放内存；2.io.netty.noPreferDirect 不能设置为 true
         // We should always prefer direct buffers by default if we can use a Cleaner to release direct buffers.
         DIRECT_BUFFER_PREFERRED = CLEANER != NOOP
                                   && !SystemPropertyUtil.getBoolean("io.netty.noPreferDirect", false);
