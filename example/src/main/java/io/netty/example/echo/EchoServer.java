@@ -54,7 +54,7 @@ public final class EchoServer {
         }
 
         // Configure the server.
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("BOSS"));
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("boss"));
         EventLoopGroup workerGroup = new NioEventLoopGroup(new DefaultThreadFactory("worker"));
         final EchoServerHandler serverHandler = new EchoServerHandler();
         try {

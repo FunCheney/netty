@@ -64,6 +64,9 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
      */
     protected AbstractNioByteChannel(Channel parent, SelectableChannel ch) {
         // 继续调用父类的构造方法
+        // parent 为 NioServerSocketChannel
+        // ch 为 SocketChannel
+        // 注册 感兴趣的事件为 读事件
         super(parent, ch, SelectionKey.OP_READ);
     }
 

@@ -154,7 +154,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
 
         try {
             if (ch != null) {
-                // 实例化一个 NioSocketChannel，并传出 NioServerSocketChannel 对象
+                // 实例化一个 NioSocketChannel，并传入 NioServerSocketChannel 对象
                 // 创建的 NioSocketChannel 的父类 channel 就是 NioServerSocketChannel 实例
                 // 利用 netty 的 ChannelPipeline 机制，将事件逐个发送到各个 Handler 中，于是就会触发
                 // ServerBootstrapAcceptor 的 channelRead() 方法
