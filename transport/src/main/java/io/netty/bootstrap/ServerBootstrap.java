@@ -216,8 +216,9 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         @Override
         @SuppressWarnings("unchecked")
         public void channelRead(ChannelHandlerContext ctx, Object msg) {
+            // 得到客户端建立完连接的 channel，这里表示 acceptor 接收到连接的 channel
             final Channel child = (Channel) msg;
-
+            // 将 workGroup 中处理的处理的 handler 添加到 pipeline 中
             child.pipeline().addLast(childHandler);
 
             setChannelOptions(child, childOptions, logger);

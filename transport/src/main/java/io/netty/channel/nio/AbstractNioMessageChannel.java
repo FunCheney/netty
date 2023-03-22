@@ -73,6 +73,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
             try {
                 try {
                     do {
+                        // 通过读取消息 存储在 readBuf 中
                         int localRead = doReadMessages(readBuf);
                         if (localRead == 0) {
                             break;
@@ -83,14 +84,17 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
                         }
 
                         allocHandle.incMessagesRead(localRead);
+                        // 判断是否读取完触发 accept 事件的客户端channel
                     } while (allocHandle.continueReading());
                 } catch (Throwable t) {
                     exception = t;
                 }
-
+                // 从readBuf 中读取数据，这里是建立完连接的 NioSocketChannel
+                // size 为建立完连接的 channel
                 int size = readBuf.size();
                 for (int i = 0; i < size; i ++) {
                     readPending = false;
+                    // 通过 pipeline 将建立完连接的客户端 channel 传递给 acceptor 执行
                     pipeline.fireChannelRead(readBuf.get(i));
                 }
                 readBuf.clear();

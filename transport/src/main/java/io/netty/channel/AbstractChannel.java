@@ -505,7 +505,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 }
                 boolean firstRegistration = neverRegistered;
                 // 调用 AbstractNioChannel 的 doRegister 方法
-                // 把系统创建的 ServerSocketChannel 注册进了选择器
+                // 把系统创建的 NIO SocketChannel 注册进了选择器
                 doRegister();
 
                 neverRegistered = false;

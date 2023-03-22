@@ -150,14 +150,17 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
     @Override
     protected int doReadMessages(List<Object> buf) throws Exception {
         // 获取客户端新连接的 SocketChannel 对象
+        // 在 ServerSocketChannel 触发 accept 事件 socketChannel
         SocketChannel ch = SocketUtils.accept(javaChannel());
 
         try {
             if (ch != null) {
-                // 实例化一个 NioSocketChannel，并传入 NioServerSocketChannel 对象
+                // 实例化一个 NioSocketChannel，并传入 NioServerSocketChannel(this) 对象
                 // 创建的 NioSocketChannel 的父类 channel 就是 NioServerSocketChannel 实例
                 // 利用 netty 的 ChannelPipeline 机制，将事件逐个发送到各个 Handler 中，于是就会触发
                 // ServerBootstrapAcceptor 的 channelRead() 方法
+                // 将获取到的 SocketChannel 分装成 NioSocketChannel, 并初始话该 NioSocketChannel 感兴趣的事件为 READ 事件
+                // 将该对象添加到 readBuf 中
                 buf.add(new NioSocketChannel(this, ch));
                 return 1;
             }

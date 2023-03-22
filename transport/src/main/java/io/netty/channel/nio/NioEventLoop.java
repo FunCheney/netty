@@ -706,7 +706,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
         try {
             int readyOps = k.readyOps();
-            logger.info("processSelectedKey readyOps {}", readyOps);
+            logger.info("processSelectedKey readyOps {} thread {} ", readyOps, Thread.currentThread().getName());
             // We first need to call finishConnect() before try to trigger a read(...) or write(...) as otherwise
             // the NIO JDK channel implementation may throw a NotYetConnectedException.
             if ((readyOps & SelectionKey.OP_CONNECT) != 0) {
@@ -728,6 +728,9 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // Also check for readOps of 0 to workaround possible JDK bug which may otherwise lead
             // to a spin loop
             if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
+                // BossGroup 中的 eventLoop 中的 selector 监听到 OP_ACCEPT 事件，通过 acceptor 分发给 workGroup 中的
+                // eventLoop 中的 selector 中。这里的处理逻辑在 NioMessageUnsafe#read() 方法中
+
                 unsafe.read();
             }
         } catch (CancelledKeyException ignored) {
